@@ -30,8 +30,9 @@
 	justify-content: center;
 	padding: 1vmax;
 }
-#ctrl #length {
+#length {
 	align-self: center;
+	margin-bottom: 1vmax !important;
 	text-align: center;
 	width: 6vmax;
 }
