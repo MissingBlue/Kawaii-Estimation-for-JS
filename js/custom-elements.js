@@ -13,6 +13,17 @@ class AppNode extends CustomElement {
 		this.querySelector('app-container')?.appendChild(document.createElement('bench-node'));
 		
 	}
+	removeAll() {
+		
+		const benches = this.querySelector('app-container')?.getBenchNodes();
+		let i;
+		
+		if (!benches) return;
+		
+		i = -1;
+		while (benches[++i]) benches[i]?.release?.();
+		
+	}
 	toJSON() {
 		
 		const	benches = this.querySelector('app-container')?.getBenchNodes(),
@@ -26,17 +37,6 @@ class AppNode extends CustomElement {
 		
 		
 		return data;
-		
-	}
-	removeAll() {
-		
-		const benches = this.querySelector('app-container')?.getBenchNodes();
-		let i;
-		
-		if (!benches) return;
-		
-		i = -1;
-		while (benches[++i]) benches[i]?.release?.();
 		
 	}
 	
@@ -102,7 +102,7 @@ class BenchNode extends CustomElement {
 		},
 		clickedCopyButton(event) {
 			
-			navigator.clipboard.writeText(JSON.stringify(this.toJSON, null, '\t')).
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t')).
 				then(() => alert('Copied!'));
 			
 		},
@@ -266,7 +266,7 @@ class BenchTextarea extends CustomElement {
 	
 	toJSON() {
 		
-		return { length: this.length, code: this.value };
+		return { length: this.length, script: this.value };
 		
 	}
 	
