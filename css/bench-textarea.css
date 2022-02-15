@@ -1,0 +1,44 @@
+@import url("common.css");
+@import url("shared.css");
+
+#root {
+	display: flex;
+	flex-direction: column;
+	padding: 1vmax;
+}
+#report {
+	margin: 0 0 .5vmax;
+	padding: .5vmax;
+}
+#report * {
+	font-size: 1rem;
+}
+#editor {
+	display: flex;
+}
+#ctrl {
+	display: flex;
+	flex-direction: column;
+	padding: 1vmax;
+	padding-left: 0vmax;
+}
+#ctrl > :not(:last-child) {
+	margin-bottom: .5vmax;
+}
+#ctrl label {
+	display: flex;
+	justify-content: center;
+	padding: 1vmax;
+}
+#ctrl #length {
+	align-self: center;
+	text-align: center;
+	width: 6vmax;
+}
+#value {
+	
+	font: normal normal normal .8rem/1 "Source Code Pro";
+	flex: 1 0 auto;
+	height: 20vmax;
+	
+}

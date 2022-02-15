@@ -1,0 +1,63 @@
+@import url("common.css");
+@import url("shared.css");
+
+#caption {
+	align-items: center;
+	display: flex;
+}
+#caption::before,
+#caption::after {
+	border-top: 1px dotted rgba(160,160,160,1);
+	content: "";
+	flex: 1 0 auto;
+	height: 1px;
+}
+#report {
+	margin: 1vmax 0;
+	padding: 2vmax;
+}
+#report * {
+	font-size: 2rem;
+}
+#ctrl {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	position: relative;
+}
+#ctrl #run {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+#ctrl #remove {
+	position: absolute;
+	right: 0;
+}
+#ctrl #length {
+	text-align: right;
+}
+#codes {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 1vmax;
+}
+#codes > * {
+	
+	flex: 1 0 auto;
+	
+}
+#codes > :not(#add):not(last-child) {
+	
+	border-right: 1px solid rgba(200,200,200,1);
+	padding-right: 2vmax;
+	margin-right: 2vmax;
+	
+}
+#codes > #add {
+	
+	align-self: center;
+	font-size: 1.5rem;
+	font-weight: bold;
+	flex: 0 1 auto;
+	
+}

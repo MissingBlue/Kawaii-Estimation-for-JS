@@ -1,0 +1,22 @@
+@import url("common.css");
+
+app-node {
+	display: block;
+	margin: .5vmax;
+	padding: .5vmax;
+}
+
+app-container {
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+app-container > bench-node:not(:last-child) {
+	margin-top: 2vmax;
+}
+bench-node span[slot="caption"] {
+	color: rgba(160,160,160,1);
+	font-family: "Arial Black";
+	font-size: 1.3rem;
+	margin: 0 1vmax;
+}

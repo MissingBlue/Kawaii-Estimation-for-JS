@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<title>Kawaii Estimation for JS</title>
+		<link rel="stylesheet" href="css/default.css" />
+		<script src="js/utils.js"></script>
+		<script src="js/custom-elements.js"></script>
+	</head>
+	<body>
+		
+		<template id="app-ctrl" data-css="css/app-ctrl.css">
+			<div id="root">
+				<button type="button" class="add">Add an Instance</button>
+			</div>
+		</template>
+		
+		<template id="bench-node" data-css="css/bench-node.css">
+			<div id="root">
+				<div id="caption"><slot name="caption"></slot></div>
+				<div id="report"><div id="result">N/A</div></div>
+				<div id="ctrl">
+					<button type="button" id="remove">Remove This Instance</button>
+					<button type="button" id="run">Run</button>
+				</div>
+				<div id="codes">
+					<bench-textarea></bench-textarea>
+					<button type="button" id="add">+</button>
+				</div>
+			</div>
+		</template>
+		
+		<template id="bench-textarea" data-css="css/bench-textarea.css">
+			<div id="root">
+				<div id="report"><div id="result">N/A</div></div>
+				<div id="editor">
+					<div id="ctrl">
+						<input type="text" id="length"/>
+						<button type="button" id="run">Run</button>
+						<button type="button" id="clear">Clear</button>
+						<button type="button" id="remove">Remove</button>
+					</div>
+					<textarea id="value" class="nohint"></textarea>
+				</div>
+			</div>
+		</template>
+		
+		<app-node>
+			<app-ctrl></app-ctrl>
+			<app-container>
+				<bench-node></bench-node>
+			</app-container>
+		</app-node>
+		
+	</body>
+</html>

@@ -1,0 +1,10 @@
+#report * {
+	font-family: "Arial Black";
+}
+#report {
+	background-color: rgba(240,240,240,1);
+	border-radius: .4vmax;
+	color: rgba(96,96,96,1);
+	font-family: "Arial Black";
+	text-align: center;
+}
