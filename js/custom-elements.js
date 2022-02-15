@@ -13,6 +13,32 @@ class AppNode extends CustomElement {
 		this.querySelector('app-container')?.appendChild(document.createElement('bench-node'));
 		
 	}
+	toJSON() {
+		
+		const	benches = this.querySelector('app-container')?.getBenchNodes(),
+				data = [];
+		let i;
+		
+		if (benches) {
+			i = -1;
+			while (benches[++i]) data[i] = { label: benches[i].label, scripts: benches[i].toJSON() };
+		}
+		
+		
+		return data;
+		
+	}
+	removeAll() {
+		
+		const benches = this.querySelector('app-container')?.getBenchNodes();
+		let i;
+		
+		if (!benches) return;
+		
+		i = -1;
+		while (benches[++i]) benches[i]?.release?.();
+		
+	}
 	
 }
 class AppCtrl extends CustomElement {
@@ -21,6 +47,16 @@ class AppCtrl extends CustomElement {
 	static bound = {
 		clickedAddButton() {
 			this.closest('app-node')?.addBenchNode();
+		},
+		clickedCopyButton() {
+			
+			navigator.clipboard.writeText
+				(JSON.stringify(this.closest('app-node')?.toJSON(), null, '\t')).
+					then(() => alert('Copied!'));
+			
+		},
+		clickedRemoveButton() {
+			this.closest('app-node')?.removeAll();
 		}
 	};
 	
@@ -28,7 +64,9 @@ class AppCtrl extends CustomElement {
 		
 		super(option),
 		
-		this.addEvent(this.q('button.add'), 'click', this.clickedAddButton);
+		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
+		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
+		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton);
 		
 	}
 	
@@ -43,6 +81,9 @@ class AppContainer extends CustomElement {
 		
 		super(option);
 		
+	}
+	getBenchNodes() {
+		return this.querySelectorAll(':scope > bench-node');
 	}
 	
 }
@@ -59,15 +100,15 @@ class BenchNode extends CustomElement {
 		clickedAddButton(event) {
 			this.q('#codes')?.insertBefore(document.createElement('bench-textarea'), event.target);
 		},
+		clickedCopyButton(event) {
+			
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON, null, '\t')).
+				then(() => alert('Copied!'));
+			
+		},
 		clickedRemoveButton() {
 			
-			const textareas = this.qq('bench-textarea');
-			let i;
-			
-			i = -1;
-			while (textareas[++i]) textareas[i].destroy();
-			
-			this.destroy();
+			this.release();
 			
 		},
 		clickedRunButton() {
@@ -78,11 +119,14 @@ class BenchNode extends CustomElement {
 		
 	};
 	
+	get label() { return this.querySelector('[slot="caption"]')?.textContent; }
+	
 	constructor(option) {
 		
 		super(option);
 		
 		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
+		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton),
 		this.addEvent(this.q('#run'), 'click', this.clickedRunButton),
 		
@@ -96,7 +140,8 @@ class BenchNode extends CustomElement {
 		if (!this.querySelector('[slot="caption"]')) {
 			const caption = document.createElement('span');
 			caption.slot = 'caption',
-			caption.textContent = container.children.length;
+			caption.textContent = container.children.length,
+			this.appendChild(caption);
 		}
 		
 	}
@@ -112,6 +157,28 @@ class BenchNode extends CustomElement {
 			report.time < 1000 ? `${report.time}ms` : `${report.time / 1000}s`;
 		
 		return report;
+		
+	}
+	release() {
+		
+		const textareas = this.qq('bench-textarea');
+		let i;
+		
+		i = -1;
+		while (textareas[++i]) textareas[i].destroy();
+		
+		this.destroy();
+		
+	}
+	toJSON() {
+		
+		const codes = this.qq('#codes > bench-textarea'), data = [];
+		let i;
+		
+		i = -1;
+		while (codes[++i]) data[i] = codes[i].toJSON();
+		
+		return data;
 		
 	}
 	
@@ -130,6 +197,12 @@ class BenchTextarea extends CustomElement {
 		},
 		clickedRunButton() {
 			this.run();
+		},
+		clickedCopyButton() {
+			
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t')).
+				then(() => alert('Copied!'));
+			
 		},
 		clickedClearButton() {
 			this.q('#value').value = '';
@@ -155,6 +228,7 @@ class BenchTextarea extends CustomElement {
 		
 		this.addEvent(this.q('#value'), 'keydown', this.pressedKey),
 		this.addEvent(this.q('#run'), 'click', this.clickedRunButton),
+		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
 		this.addEvent(this.q('#clear'), 'click', this.clickedClearButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton);
 		
@@ -187,6 +261,12 @@ class BenchTextarea extends CustomElement {
 			report.time < 1000 ? `${report.time}ms` : `${report.time / 1000}s`;
 		
 		return report;
+		
+	}
+	
+	toJSON() {
+		
+		return { length: this.length, code: this.value };
 		
 	}
 	

@@ -11,7 +11,11 @@
 		
 		<template id="app-ctrl" data-css="css/app-ctrl.css">
 			<div id="root">
-				<button type="button" class="add">Add an Instance</button>
+				<button type="button" id="add">Add an Instance</button>
+				<div id="options">
+					<button type="button" id="copy">Copy Whole as JSON</button>
+					<button type="button" id="remove">Remove All Instances</button>
+				</div>
 			</div>
 		</template>
 		
@@ -20,7 +24,10 @@
 				<div id="caption"><slot name="caption"></slot></div>
 				<div id="report"><div id="result">N/A</div></div>
 				<div id="ctrl">
-					<button type="button" id="remove">Remove This Instance</button>
+					<div id="options">
+						<button type="button" id="copy">Copy as JSON</button>
+						<button type="button" id="remove">Remove This Instance</button>
+					</div>
 					<button type="button" id="run">Run</button>
 				</div>
 				<div id="codes">
@@ -34,11 +41,14 @@
 			<div id="root">
 				<div id="report"><div id="result">N/A</div></div>
 				<div id="editor">
-					<div id="ctrl">
+					<div id="ctrl" class="ctrl-group">
 						<input type="text" id="length"/>
 						<button type="button" id="run">Run</button>
-						<button type="button" id="clear">Clear</button>
-						<button type="button" id="remove">Remove</button>
+						<button type="button" id="copy">Copy</button>
+						<div id="danger" class="ctrl-group">
+							<button type="button" id="clear">Clear</button>
+							<button type="button" id="remove">Remove</button>
+						</div>
 					</div>
 					<textarea id="value" class="nohint"></textarea>
 				</div>
