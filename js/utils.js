@@ -41,6 +41,7 @@ decolog = (content, decoChr) => deco(content, decoChr,decoChr,' ', `${decoChr} `
 
 // uuid を生成
 // https://qiita.com/psn/items/d7ac5bdb5b5633bae165
+// crypto.randomUUID の方が二倍速いので、同メソッドが使えないと言う状況以外ではこの関数を使う意味はない。
 uid4	= (prefix = '', suffix = '') => {
 	
 	const UID4F = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';

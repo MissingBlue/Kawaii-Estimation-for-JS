@@ -88,8 +88,8 @@ class DockCtrl extends CustomElement {
 		super(option),
 		
 		this.importNodeData = {
-			title: 'Import App from JSON',
-			placeholder: 'Input app JSON.',
+			title: 'Import an App from JSON',
+			placeholder: 'Input an app JSON.',
 			buttons: [
 				{ id: 'import', data: { contents: 'Import' } },
 				{ id: 'cancel', data: { contents: 'Cancel' } }
@@ -223,9 +223,7 @@ class AppCtrl extends CustomElement {
 				return;
 			}
 			
-			const app = AppNode.from(data);
-			
-			document.body.prepend(app),
+			this.closest('app-node')?.addBenchNode(data),
 			
 			event.target.destroy();
 			
@@ -279,8 +277,8 @@ class AppCtrl extends CustomElement {
 		super(option),
 		
 		this.importNodeData = {
-			title: 'Import Nodes from JSON',
-			placeholder: 'Input nodes JSON.',
+			title: 'Import a Node from JSON',
+			placeholder: 'Input a node JSON.',
 			buttons: [
 				{ id: 'import', data: { contents: 'Import' } },
 				{ id: 'cancel', data: { contents: 'Cancel' } }
@@ -370,6 +368,22 @@ class BenchNode extends CustomElement {
 				then(() => alert('Copied!'));
 			
 		},
+		clickedImportButton() {
+			
+			const	inputNode = document.createElement('input-node');
+			
+			this.q('#import').setAttribute('disabled', ''),
+			
+			inputNode.id = crypto.randomUUID(),
+			inputNode.set(this.importNodeData),
+			
+			inputNode.addEvent(undefined, inputNode.id + '-import-click', this.emittedImport),
+			inputNode.addEvent(undefined, inputNode.id + '-cancel-click', this.emittedCancel),
+			
+			inputNode.addEvent(this, 'destroyed', () => inputNode.destroy(), { once: true }),
+			this.addEvent(inputNode, 'destroyed', this.emittedDestroyed, { once: true });
+			
+		},
 		clickedRemoveButton() {
 			
 			this.kill();
@@ -379,7 +393,29 @@ class BenchNode extends CustomElement {
 			
 			const report = this.run({ k: '$', v: Object.create(null) }, { k: '_', v: this });
 			
-		}
+		},
+		
+		emittedImport(event) {
+			
+			const data = fromJSON(event.target.value);
+			
+			if (data === undefined) {
+				alert('Input string is not JSON.');
+				return;
+			}
+			
+			this.addScript(data, this.q('#add')),
+			
+			event.target.destroy();
+			
+		},
+		emittedCancel(event) {
+			event.target.destroy();
+		},
+		emittedDestroyed(event) {
+			this.q('#import').removeAttribute('disabled'),
+			this.removeEvent(event.target, 'destroyed', this.emittedDestroyed);
+		},
 		
 	};
 	
@@ -402,8 +438,21 @@ class BenchNode extends CustomElement {
 		
 		super(option);
 		
+		this.importNodeData = {
+			title: 'Import a Script from JSON',
+			placeholder: 'Input a script JSON.',
+			buttons: [
+				{ id: 'import', data: { contents: 'Import' } },
+				{ id: 'cancel', data: { contents: 'Cancel' } }
+			],
+			width: '50%', height: '50%',
+			left: 'center', top: 'center',
+			parent: document.body
+		},
+		
 		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
 		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
+		this.addEvent(this.q('#import'), 'click', this.clickedImportButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton),
 		this.addEvent(this.q('#run'), 'click', this.clickedRunButton),
 		
