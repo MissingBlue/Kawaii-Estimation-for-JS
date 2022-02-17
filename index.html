@@ -9,12 +9,23 @@
 	</head>
 	<body>
 		
+		<template id="dock-ctrl" data-css="css/dock-ctrl.css">
+			<div id="root">
+				<div id="options">
+					<button type="button" id="import">Import App...</button>
+					<button type="button" id="remove">Remove All Apps</button>
+				</div>
+			</div>
+		</template>
+		
 		<template id="app-ctrl" data-css="css/app-ctrl.css">
 			<div id="root">
-				<button type="button" id="add">Add an Instance</button>
+				<button type="button" id="add">Add a Node</button>
 				<div id="options">
-					<button type="button" id="copy">Copy Whole as JSON</button>
-					<button type="button" id="remove">Remove All Instances</button>
+					<button type="button" id="copy">Copy as JSON</button>
+					<button type="button" id="import">Import Nodes...</button>
+					<button type="button" id="remove-nodes">Remove All Nodes</button>
+					<button type="button" id="remove">Remove</button>
 				</div>
 			</div>
 		</template>
@@ -24,11 +35,12 @@
 				<div id="caption"><slot name="caption"></slot></div>
 				<div id="report"><div id="result">N/A</div></div>
 				<div id="ctrl">
+					<button type="button" id="run">Run</button>
 					<div id="options">
 						<button type="button" id="copy">Copy as JSON</button>
-						<button type="button" id="remove">Remove This Instance</button>
+						<button type="button" id="import">Import Scripts...</button>
+						<button type="button" id="remove">Remove This Node</button>
 					</div>
-					<button type="button" id="run">Run</button>
 				</div>
 				<div id="codes">
 					<bench-textarea></bench-textarea>
@@ -55,12 +67,29 @@
 			</div>
 		</template>
 		
-		<app-node>
-			<app-ctrl></app-ctrl>
-			<app-container>
-				<bench-node></bench-node>
-			</app-container>
-		</app-node>
+		<template id="input-node" data-css="css/input-node.css">
+			<div id="root">
+				<div id="header">
+					<slot name="title"></slot>
+				</div>
+				<div id="body">
+					<div id="buttons"></div>
+					<div id="value-outer"><textarea id="value"></textarea></div>
+				</div>
+			</div>
+		</template>
+		
+		<app-dock>
+			<dock-ctrl></dock-ctrl>
+			<dock-container>
+				<app-node>
+					<app-ctrl></app-ctrl>
+					<app-container>
+						<bench-node></bench-node>
+					</app-container>
+				</app-node>
+			</dock-container>
+		</app-dock>
 		
 	</body>
 </html>

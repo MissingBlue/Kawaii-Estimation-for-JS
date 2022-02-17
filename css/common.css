@@ -15,12 +15,13 @@ button {
 	--hover-color: rgba(0,200,0,1);
 	--active-color: rgba(255,0,0,1);
 	
+	--button-background-color: rgba(255,255,255,1);
 	--button-border-color: var(--link-color);
 	--button-color: var(--link-color);
 	
 	--button-press-amount: 3px;
 	
-	background-color: rgba(0,0,0,0);
+	background-color: var(--button-background-color);
 	border: 1px solid var(--button-border-color);
 	border-bottom-width: var(--button-press-amount);
 	border-radius: var(--button-press-amount);
@@ -29,11 +30,11 @@ button {
 	padding: .8vmax;
 	
 }
-button:hover {
+button:not(:disabled):hover {
 	--button-border-color: var(--hover-border-color);
 	--button-color: var(--hover-color);
 }
-button:active {
+button:not(:disabled):active {
 	
 	--button-border-color: var(--active-border-color);
 	--button-color: var(--active-color);
@@ -41,6 +42,10 @@ button:active {
 	border-bottom-width: 1px;
 	border-top-width: var(--button-press-amount);
 	
+}
+button:disabled {
+	--button-background-color: rgba(200,200,200,1);
+	--button-color: rgba(255,255,255,1);
 }
 
 /* テキスト入力 */

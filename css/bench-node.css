@@ -20,20 +20,31 @@
 	font-size: 2rem;
 }
 #ctrl {
-	align-items: center;
 	display: flex;
+	flex-direction: column-reverse;
 	justify-content: center;
+	margin: 0 .5vmax;
 	position: relative;
 }
-#ctrl #run {
+#run {
 	font-size: 1.5rem;
 	font-weight: bold;
+	margin: 1vmax 0 0;
 }
-#ctrl #options {
-	position: absolute;
-	right: 0;
+#options {
+	display: flex;
+	justify-content: flex-end;
 }
-#ctrl #length {
+#options > * {
+	margin: 0 .5vmax;
+}
+#options > :first-child {
+	margin-left: 0;
+}
+#options > :last-child {
+	margin-right: 0;
+}
+#length {
 	text-align: right;
 }
 #codes {

@@ -1,17 +1,33 @@
 @import url("common.css");
 
-app-node {
+html, body {
+	height: 100%;
+}
+
+body {
+	position: relative;
+}
+
+app-dock {
 	display: block;
-	margin: .5vmax;
-	padding: .5vmax;
+	position relative;
+}
+
+app-node {
+	border: 3px solid rgba(216,216,216,1);
+	border-radius: 1vmax;
+	display: block;
+	margin: 1vmax;
+	padding: 1vmax;
 }
 
 app-container {
 	display: flex;
 	flex-direction: column-reverse;
+	padding: 0 3vmax;
 }
 
-app-container > bench-node:not(:last-child) {
+app-container > not(:last-child) {
 	margin-top: 2vmax;
 }
 bench-node span[slot="caption"] {
@@ -19,4 +35,17 @@ bench-node span[slot="caption"] {
 	font-family: "Arial Black";
 	font-size: 1.3rem;
 	margin: 0 1vmax;
+}
+
+input-node {
+	
+	height: var(--height, auto);
+	left: calc(var(--left, 0px) + var(--movement-x, 0px));
+	position: absolute;
+	top: calc(var(--top, 0px) + var(--movement-y, 0px));
+	width: var(--width, auto);
+	
+}
+input-node.moving {
+	user-select: none;
 }

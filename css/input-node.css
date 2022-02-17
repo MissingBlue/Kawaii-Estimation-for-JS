@@ -1,0 +1,62 @@
+@import url("common.css");
+
+#root {
+	background-color: rgba(255,255,255,1);
+	border: 1px solid rgba(144,144,144,1);
+	border-radius: .4vmax;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+}
+#header {
+	background-color: rgba(160,160,160,1);
+	color: rgba(255,255,255,1);
+	cursor: default;
+	flex: 0 1 auto;
+	margin: .2vmax;
+	padding: .5vmax;
+}
+#header slot[name="title"]::slotted(div) {
+	font-size: .7rem !important;
+	text-align: center;
+}
+
+#body {
+	display: flex;
+	flex: 1 0 auto;
+	flex-direction: column;
+}
+
+#buttons {
+	display: flex;
+	flex: 0 1 auto;
+	justify-content: center;
+	padding: .5vmax;
+}
+#buttons button {
+	font-size: .7rem;
+	padding: .6vmax;
+}
+#buttons button {
+	margin: 0 .3vmax;
+}
+#buttons > :first-child {
+	margin-left: 0;
+}
+#buttons > :last-child {
+	margin-right: 0;
+}
+#buttons button slot[name]::slotted(div) {
+	font-size: .7rem !important;
+}
+#value-outer {
+	flex: 1 0 auto;
+	padding: .5vmax;
+}
+#value {
+	box-sizing: border-box;
+	font-size: .7rem;
+	height: 100%;
+	width: 100%;
+}

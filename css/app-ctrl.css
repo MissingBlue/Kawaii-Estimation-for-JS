@@ -2,15 +2,26 @@
 
 #root {
 	display: flex;
+	flex-direction: column-reverse;
 	justify-content: center;
 	padding: 1vmax;
-	position: relative;
 }
 
 #add {
 	font-size: 1rem;
+	margin: 1vmax 0;
 }
 #options {
-	position: absolute;
+	display: flex;
+	justify-content: flex-end;
 	right: 0;
+}
+#options > * {
+	margin: 0 .5vmax;
+}
+#options > :first-child {
+	margin-left: 0;
+}
+#options > :last-child {
+	margin-right: 0;
 }

@@ -525,18 +525,23 @@ class ExtensionNode extends HTMLElement {
 			
 			if ('events' in data) {
 				
+				const args = [];
+				
 				i = -1, l = (events = Array.isArray(data.events) ? data.events : [ data.events ]).length;
-				while (++i < l) isObj(event = events[i]) &&
-					elm.addEventListener(
-							event.type,
-							event.bind ? 'args' in event ? Array.isArray(event.args) ?
-								event.handler.bind(event.bind, ...event.args) :
-								event.handler.bind(event.bind, event.args) :
-								event.handler.bind(event.bind) :
-								event.handler,
-							event.option,
-							event.untrusts
-						);
+				while (++i < l) isObj(event = events[i]) && (
+						i0 = -1,
+						elm instanceof ExtensionNode && (args[++i0] = elm?.target ?? elm),
+						args[++i0] = event.type,
+						args[++i0] =	event.bind ? 'args' in event ? Array.isArray(event.args) ?
+												event.handler.bind(event.bind, ...event.args) :
+												event.handler.bind(event.bind, event.args) :
+												event.handler.bind(event.bind) :
+												event.handler,
+						args[++i0] = event.option,
+						args[++i0] = event.untrusts,
+						elm['addEvent' + (i0 === 3 ? 'Listener' : '')](...args),
+						args.length = 0
+					);
 				
 			}
 			
