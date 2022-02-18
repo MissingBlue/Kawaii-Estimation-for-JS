@@ -48,6 +48,68 @@ button:disabled {
 	--button-color: rgba(255,255,255,1);
 }
 
+button[is="emission-button"] {
+	position: relative;
+}
+button[is="emission-button"]:not(.custom) emission-node {
+	
+	--size: 7vmax;
+	
+	border: 3px solid rgba(144,144,144,1);
+	border-radius: 100%;
+	height: var(--size);
+	left: calc(var(--offset-x) - var(--size) / 2);
+	position: absolute;
+	top: calc(var(--offset-y) - var(--size) / 2);
+	width: var(--size);
+	
+	animation: sample .4s ease 0s 1 normal forwards running;
+	
+}
+@keyframes sample {
+	from {
+		opacity: 1;
+		transform: scale(0);
+	}
+	to {
+		opacity: 0;
+		transform: scale(1);
+	}
+}
+button[is="emission-button"].copy emission-node {
+	
+	--transform-0: translate(-50%,-100%);
+	--transform-1: translate(-50%,calc(-100% + -1vmax));
+	
+	background-color: rgba(255,255,255,1);
+	border: 1px solid rgba(160,160,160,1);
+	border-radius: .4vmax;
+	left: var(--offset-x);
+	padding: .4vmax;
+	position: absolute;
+	top: var(--offset-y);
+	transform: var(--transform-0);
+	animation: copied .15s ease-out .4s 1 normal forwards running;
+	
+}
+button[is="emission-button"].copy emission-node::before {
+	
+	color: rgba(144,144,144,1);
+	content: "Copied!";
+	font: normal normal bold .8rem/1 "Arial black";
+	
+}
+@keyframes copied {
+	from {
+		opacity: 1;
+		transform: var(--transform-0);
+	}
+	to {
+		opacity: 0;
+		transform: var(--transform-1);
+	}
+}
+
 /* テキスト入力 */
 input[type="text"], textarea {
 	

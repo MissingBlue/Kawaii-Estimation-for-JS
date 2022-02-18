@@ -19,8 +19,7 @@
 #ctrl {
 	display: flex;
 	flex-direction: column;
-	padding: 1vmax;
-	padding-left: 0vmax;
+	padding: 0 1vmax 0 0;
 }
 .ctrl-group > :not(:last-child) {
 	margin-bottom: .5vmax;

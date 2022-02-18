@@ -212,6 +212,7 @@ class AppNode extends CustomElement {
 class AppCtrl extends CustomElement {
 	
 	static tagName = 'app-ctrl';
+	static once = { once: true };
 	static bound = {
 		
 		emittedImport(event) {
@@ -240,9 +241,7 @@ class AppCtrl extends CustomElement {
 		},
 		clickedCopyButton() {
 			
-			navigator.clipboard.writeText
-				(JSON.stringify(this.closest('app-node')?.toJSON(), null, '\t')).
-					then(() => alert('Copied!'));
+			navigator.clipboard.writeText(JSON.stringify(this.closest('app-node')?.toJSON(), null, '\t'));
 			
 		},
 		clickedImportButton() {
@@ -257,8 +256,8 @@ class AppCtrl extends CustomElement {
 			inputNode.addEvent(undefined, inputNode.id + '-import-click', this.emittedImport),
 			inputNode.addEvent(undefined, inputNode.id + '-cancel-click', this.emittedCancel),
 			
-			inputNode.addEvent(this, 'destroyed', () => inputNode.destroy(), { once: true }),
-			this.addEvent(inputNode, 'destroyed', this.emittedDestroyed, { once: true });
+			inputNode.addEvent(this, 'destroyed', () => inputNode.destroy(), AppCtrl.once),
+			this.addEvent(inputNode, 'destroyed', this.emittedDestroyed, AppCtrl.once);
 			
 		},
 		clickedRemoveNodesButton() {
@@ -325,10 +324,13 @@ class AppContainer extends CustomElement {
 class BenchNode extends CustomElement {
 	
 	static tagName = 'bench-node';
-	static README =	'i: current loop increment\n' +
-							'l: loop length\n' +
-							'$: An exactly empty object. To share the value between the codes, use this.\n' +
-							'_: this node';
+	static README =	'You can use the following arguments in your script.\n' +
+							'i - current loop increment\n' +
+							'l - loop length for the script\n\n' +
+							'The properties of the object returned from your script would be passed as arguments to all backward scripts. The object will be merged backward. Note that the order of your arguments cannot be specified. Using the property name as a variable is recommended.\n\n' +
+							'There are a lot of the global variables in this app unfortunately. If something goes into wrong in your script, try to rename your variable.\n\n' +
+							'No fail safe. Be careful to edit and execute.';
+	static once = { once: true };
 	static from(data) {
 		
 		const node = document.createElement('bench-node');
@@ -364,8 +366,7 @@ class BenchNode extends CustomElement {
 		},
 		clickedCopyButton(event) {
 			
-			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t')).
-				then(() => alert('Copied!'));
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t'));
 			
 		},
 		clickedImportButton() {
@@ -380,8 +381,8 @@ class BenchNode extends CustomElement {
 			inputNode.addEvent(undefined, inputNode.id + '-import-click', this.emittedImport),
 			inputNode.addEvent(undefined, inputNode.id + '-cancel-click', this.emittedCancel),
 			
-			inputNode.addEvent(this, 'destroyed', () => inputNode.destroy(), { once: true }),
-			this.addEvent(inputNode, 'destroyed', this.emittedDestroyed, { once: true });
+			inputNode.addEvent(this, 'destroyed', () => inputNode.destroy(), BenchNode.once),
+			this.addEvent(inputNode, 'destroyed', this.emittedDestroyed, BenchNode.once);
 			
 		},
 		clickedRemoveButton() {
@@ -391,7 +392,7 @@ class BenchNode extends CustomElement {
 		},
 		clickedRunButton() {
 			
-			const report = this.run({ k: '$', v: Object.create(null) }, { k: '_', v: this });
+			this.run();
 			
 		},
 		
@@ -476,13 +477,15 @@ class BenchNode extends CustomElement {
 		return insert ? container.insertBefore(node, insert) : container.appendChild(node);
 		
 	}
-	run(...args) {
+	run(arg = {}) {
 		
 		const codes = this.qq('#codes > bench-textarea'), report = { data: [], time: 0 };
 		let i;
 		
 		i = -1;
-		while (codes[++i]) report.time += (report.data[i] = codes[i].run(...args)).time;
+		while (codes[++i])
+			report.time += (report.data[i] = codes[i].run(arg)).time,
+			isObj(report.data[i].returnValue) && (arg = { ...arg, ...report.data[i].returnValue });
 		
 		this.q('#result').textContent =
 			report.time < 1000 ? `${report.time}ms` : `${report.time / 1000}s`;
@@ -542,8 +545,7 @@ class BenchTextarea extends CustomElement {
 		},
 		clickedCopyButton() {
 			
-			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t')).
-				then(() => alert('Copied!'));
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t'));
 			
 		},
 		clickedClearButton() {
@@ -587,23 +589,18 @@ class BenchTextarea extends CustomElement {
 		
 	}
 	
-	run(...args) {
+	run(arg) {
 		
-		const keys = [], values = [], report = { $: this };
-		let i,l,i0;
-		
-		i = i0 = -1;
-		while (args[++i])
-			isObj(args[i]) && args[i].k && (keys[++i0] = args[i].k, values[i0] = args[i].v);
-		
-		const func = new Function('i', 'l', ...keys, this.value);
+		const func = new Function('i','l', ...Object.keys(arg ?? (arg = {})), this.value), report = {};
+		let i,l, returnValue;
 		
 		i = -1, l = this.length, report.time = performance.now();
-		while (++i < l) func(i,l,...values);
+		while (++i < l) returnValue = func(i,l, ...Object.values(arg));
 		report.time = performance.now() - report.time;
 		
 		this.q('#result').textContent =
-			report.time < 1000 ? `${report.time}ms` : `${report.time / 1000}s`;
+			report.time < 1000 ? `${report.time}ms` : `${report.time / 1000}s`,
+		report.returnValue = returnValue;
 		
 		return report;
 		
@@ -709,7 +706,7 @@ class InputNode extends CustomElement {
 		
 		if (Array.isArray(datum)) return this.setButtons(...datum);
 		
-		const	button = document.createElement('button'),
+		const	button = document.createElement('button', { is: 'emission-button' }),
 				slot = document.createElement('slot');
 		
 		button.type = 'button',
@@ -790,4 +787,94 @@ class InputNode extends CustomElement {
 	
 }
 
-defineCustomElements(AppNode, AppCtrl, AppContainer, BenchNode, BenchTextarea, InputNode, AppDock, DockCtrl, DockContainer);
+class EmissionButton extends HTMLButtonElement {
+	
+	static clicked(event) {
+		
+		const emissionNode = this.emissionNode.cloneNode(false);
+		
+		emissionNode.style.setProperty('--client-x', event.clientX + 'px'),
+		emissionNode.style.setProperty('--client-y', event.clientY + 'px'),
+		emissionNode.style.setProperty('--page-x', event.pageX + 'px'),
+		emissionNode.style.setProperty('--page-y', event.pageY + 'px'),
+		emissionNode.style.setProperty('--offset-x', event.offsetX + 'px'),
+		emissionNode.style.setProperty('--offset-y', event.offsetY + 'px'),
+		emissionNode.style.setProperty('--screen-x', event.screenX + 'px'),
+		emissionNode.style.setProperty('--screen-x', event.screenX + 'px'),
+		emissionNode.style.setProperty('--movement-x', event.movementX + 'px'),
+		emissionNode.style.setProperty('--movement-y', event.movementY + 'px'),
+		
+		this.appendChild(emissionNode);
+		
+	};
+	
+	constructor() {
+		
+		super(),
+		
+		(this.emissionNode = document.createElement('emission-node')).
+			setAttribute('trigger', 'animationend'),
+		
+		this.clicked = EmissionButton.clicked.bind(this);
+		
+	}
+	connectedCallback() {
+		
+		this.addEventListener('click', this.clicked);
+		
+	}
+	disconnectedCallback() {
+		
+		this.removeEventListener('click', this.clicked);
+		
+	}
+	
+}
+class EmissionNode extends CustomElement {
+	
+	static tagName = 'emission-node';
+	static bound = {
+		
+		callback(event) {
+			
+			++this.i >= parseInt(this.getAttribute('length') ?? 1) && this.destroy();
+			
+		}
+		
+	};
+	static get observedAttributes() { return [ 'trigger' ]; }
+	
+	constructor(option) {
+		
+		super(option),
+		
+		this.i = 0,
+		this.eventOption = { signal: (this.ac = new AbortController()).signal };
+		
+	}
+	connectedCallback() {
+		
+		this.hasAttribute('trigger') &&
+			this.addEvent(this, this.trigger, this.callback, this.eventOption);
+		
+	}
+	disconnectedCallback() {
+		
+		this.destroy();
+		
+	}
+	attributeChangedCallback(name, oldValue, value) {
+		
+		switch (name) {
+			case 'trigger':
+			this.removeEvent(this, oldValue, this.callback, this.eventOption),
+			this.addEvent(this, value, this.callback, this.eventOption);
+			break;
+		}
+		
+	}
+	
+}
+
+defineCustomElements(AppNode, AppCtrl, AppContainer, BenchNode, BenchTextarea, InputNode, AppDock, DockCtrl, DockContainer, EmissionNode),
+customElements.define('emission-button', EmissionButton, { extends: 'button' })
