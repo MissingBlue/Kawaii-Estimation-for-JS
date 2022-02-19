@@ -239,9 +239,9 @@ class AppCtrl extends CustomElement {
 		clickedAddButton() {
 			this.closest('app-node')?.addBenchNode();
 		},
-		clickedCopyButton() {
+		promisedCopyButton(event) {
 			
-			navigator.clipboard.writeText(JSON.stringify(this.closest('app-node')?.toJSON(), null, '\t'));
+			navigator.clipboard.writeText(JSON.stringify(this.closest('app-node')?.toJSON(), null, '\t')).then(() => event.detail.resolve());
 			
 		},
 		clickedImportButton() {
@@ -288,7 +288,8 @@ class AppCtrl extends CustomElement {
 		},
 		
 		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
-		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
+		this.q('#copy').setAttribute('promise', ''),
+		this.addEvent(this.q('#copy'), 'promised', this.promisedCopyButton),
 		this.addEvent(this.q('#import'), 'click', this.clickedImportButton),
 		this.addEvent(this.q('#remove-nodes'), 'click', this.clickedRemoveNodesButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton);
@@ -364,9 +365,9 @@ class BenchNode extends CustomElement {
 			this.addScript(null, event.target);
 			
 		},
-		clickedCopyButton(event) {
+		promisedCopyButton(event) {
 			
-			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t'));
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t')).then(() => event.detail.resolve());
 			
 		},
 		clickedImportButton() {
@@ -452,7 +453,8 @@ class BenchNode extends CustomElement {
 		},
 		
 		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
-		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
+		this.q('#copy').setAttribute('promise', ''),
+		this.addEvent(this.q('#copy'), 'promised', this.promisedCopyButton),
 		this.addEvent(this.q('#import'), 'click', this.clickedImportButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton),
 		this.addEvent(this.q('#run'), 'click', this.clickedRunButton),
@@ -543,9 +545,9 @@ class BenchTextarea extends CustomElement {
 		clickedRunButton() {
 			this.run();
 		},
-		clickedCopyButton() {
+		promisedCopyButton(event) {
 			
-			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t'));
+			navigator.clipboard.writeText(JSON.stringify(this.toJSON(), null, '\t')).then(() => event.detail.resolve());
 			
 		},
 		clickedClearButton() {
@@ -576,7 +578,8 @@ class BenchTextarea extends CustomElement {
 		
 		this.addEvent(this.q('#value'), 'keydown', this.pressedKey),
 		this.addEvent(this.q('#run'), 'click', this.clickedRunButton),
-		this.addEvent(this.q('#copy'), 'click', this.clickedCopyButton),
+		this.q('#copy').setAttribute('promise', ''),
+		this.addEvent(this.q('#copy'), 'promised', this.promisedCopyButton),
 		this.addEvent(this.q('#clear'), 'click', this.clickedClearButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton);
 		
@@ -791,20 +794,23 @@ class EmissionButton extends HTMLButtonElement {
 	
 	static clicked(event) {
 		
-		const emissionNode = this.emissionNode.cloneNode(false);
+		const	property = {
+					'--client-x': event.clientX + 'px',
+					'--client-y': event.clientY + 'px',
+					'--page-x': event.pageX + 'px',
+					'--page-y': event.pageY + 'px',
+					'--offset-x': event.offsetX + 'px',
+					'--offset-y': event.offsetY + 'px',
+					'--screen-x': event.screenX + 'px',
+					'--screen-x': event.screenX + 'px',
+					'--movement-x': event.movementX + 'px',
+					'--movement-y': event.movementY + 'px'
+				},
+				resolved = () => this.appendEmissionNode(property);
 		
-		emissionNode.style.setProperty('--client-x', event.clientX + 'px'),
-		emissionNode.style.setProperty('--client-y', event.clientY + 'px'),
-		emissionNode.style.setProperty('--page-x', event.pageX + 'px'),
-		emissionNode.style.setProperty('--page-y', event.pageY + 'px'),
-		emissionNode.style.setProperty('--offset-x', event.offsetX + 'px'),
-		emissionNode.style.setProperty('--offset-y', event.offsetY + 'px'),
-		emissionNode.style.setProperty('--screen-x', event.screenX + 'px'),
-		emissionNode.style.setProperty('--screen-x', event.screenX + 'px'),
-		emissionNode.style.setProperty('--movement-x', event.movementX + 'px'),
-		emissionNode.style.setProperty('--movement-y', event.movementY + 'px'),
-		
-		this.appendChild(emissionNode);
+		this.hasAttribute('promise') ?
+			new Promise((resolve, reject) => this.dispatchEvent(new CustomEvent('promised', { detail: { resolve, reject } }))).then(resolved) :
+			resolved();
 		
 	};
 	
@@ -826,6 +832,16 @@ class EmissionButton extends HTMLButtonElement {
 	disconnectedCallback() {
 		
 		this.removeEventListener('click', this.clicked);
+		
+	}
+	
+	appendEmissionNode(property) {
+		
+		const emissionNode = this.emissionNode.cloneNode(false);
+		
+		emissionNode.setCSS(property),
+		
+		this.appendChild(emissionNode);
 		
 	}
 	
@@ -871,6 +887,14 @@ class EmissionNode extends CustomElement {
 			this.addEvent(this, value, this.callback, this.eventOption);
 			break;
 		}
+		
+	}
+	setCSS(property) {
+		
+		let k;
+		
+		if (property && typeof property == 'object')
+			for (k in property) this.style.setProperty(k, property[k]);
 		
 	}
 	
