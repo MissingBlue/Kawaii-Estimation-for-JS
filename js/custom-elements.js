@@ -288,7 +288,6 @@ class AppCtrl extends CustomElement {
 		},
 		
 		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
-		this.q('#copy').setAttribute('promise', ''),
 		this.addEvent(this.q('#copy'), 'promised', this.promisedCopyButton),
 		this.addEvent(this.q('#import'), 'click', this.clickedImportButton),
 		this.addEvent(this.q('#remove-nodes'), 'click', this.clickedRemoveNodesButton),
@@ -362,8 +361,7 @@ class BenchNode extends CustomElement {
 		
 		clickedAddButton(event) {
 			
-			event.target === this.q('#add') &&
-				(event.stopPropagation(), this.addScript(null, event.target));
+			event.target === this.q('#add') && this.addScript(null, event.target);
 			
 		},
 		promisedCopyButton(event) {
@@ -454,7 +452,6 @@ class BenchNode extends CustomElement {
 		},
 		
 		this.addEvent(this.q('#add'), 'click', this.clickedAddButton),
-		this.q('#copy').setAttribute('promise', ''),
 		this.addEvent(this.q('#copy'), 'promised', this.promisedCopyButton),
 		this.addEvent(this.q('#import'), 'click', this.clickedImportButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton),
@@ -579,7 +576,6 @@ class BenchTextarea extends CustomElement {
 		
 		this.addEvent(this.q('#value'), 'keydown', this.pressedKey),
 		this.addEvent(this.q('#run'), 'click', this.clickedRunButton),
-		this.q('#copy').setAttribute('promise', ''),
 		this.addEvent(this.q('#copy'), 'promised', this.promisedCopyButton),
 		this.addEvent(this.q('#clear'), 'click', this.clickedClearButton),
 		this.addEvent(this.q('#remove'), 'click', this.clickedRemoveButton);

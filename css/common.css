@@ -59,6 +59,7 @@ button[is="emission-button"]:not(.custom) emission-node {
 	border-radius: 100%;
 	height: var(--size);
 	left: calc(var(--offset-x) - var(--size) / 2);
+	pointer-events: none;
 	position: absolute;
 	top: calc(var(--offset-y) - var(--size) / 2);
 	width: var(--size);
@@ -87,6 +88,7 @@ button[is="emission-button"].copy emission-node {
 	border-radius: .4vmax;
 	left: var(--offset-x);
 	padding: .4vmax;
+	pointer-events: none;
 	position: absolute;
 	top: var(--offset-y);
 	transform: var(--transform-0);
