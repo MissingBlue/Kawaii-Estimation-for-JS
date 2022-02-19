@@ -329,7 +329,7 @@ class BenchNode extends CustomElement {
 							'i - current loop increment\n' +
 							'l - loop length for the script\n\n' +
 							'The properties of the object returned from your script would be passed as arguments to all backward scripts. The object will be merged backward. Note that the order of your arguments cannot be specified. Using the property name as a variable is recommended.\n\n' +
-							'There are a lot of the global variables in this app unfortunately. If something goes into wrong in your script, try to rename your variable.\n\n' +
+							'There are a lot of the global variables in this app unfortunately. If something got wrong in your script, try renaming your variable.\n\n' +
 							'No fail safe. Be careful to edit and execute.';
 	static once = { once: true };
 	static from(data) {
@@ -362,7 +362,8 @@ class BenchNode extends CustomElement {
 		
 		clickedAddButton(event) {
 			
-			this.addScript(null, event.target);
+			event.target === this.q('#add') &&
+				(event.stopPropagation(), this.addScript(null, event.target));
 			
 		},
 		promisedCopyButton(event) {
@@ -794,6 +795,8 @@ class EmissionButton extends HTMLButtonElement {
 	
 	static clicked(event) {
 		
+		if (event.target !== this) return;
+		
 		const	property = {
 					'--client-x': event.clientX + 'px',
 					'--client-y': event.clientY + 'px',
@@ -809,7 +812,7 @@ class EmissionButton extends HTMLButtonElement {
 				resolved = () => this.appendEmissionNode(property);
 		
 		this.hasAttribute('promise') ?
-			new Promise((resolve, reject) => this.dispatchEvent(new CustomEvent('promised', { detail: { resolve, reject } }))).then(resolved) :
+			new Promise((resolve, reject) => this.dispatchEvent(new CustomEvent('promised', { detail: { resolve, reject, event } }))).then(resolved) :
 			resolved();
 		
 	};
@@ -893,7 +896,7 @@ class EmissionNode extends CustomElement {
 		
 		let k;
 		
-		if (property && typeof property == 'object')
+		if (property && typeof property === 'object')
 			for (k in property) this.style.setProperty(k, property[k]);
 		
 	}
@@ -901,4 +904,4 @@ class EmissionNode extends CustomElement {
 }
 
 defineCustomElements(AppNode, AppCtrl, AppContainer, BenchNode, BenchTextarea, InputNode, AppDock, DockCtrl, DockContainer, EmissionNode),
-customElements.define('emission-button', EmissionButton, { extends: 'button' })
+customElements.define('emission-button', EmissionButton, { extends: 'button' });
