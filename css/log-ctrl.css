@@ -1,0 +1,7 @@
+@import url("common.css");
+
+button {
+	font-size: .6rem;
+	font-weight: bold;
+	padding: .4vmax;
+}

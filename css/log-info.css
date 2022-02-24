@@ -1,0 +1,6 @@
+@import url("log-body.css");
+
+#content {
+}
+#message ::slotted(*) {
+}

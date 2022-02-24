@@ -1,5 +1,5 @@
 @import url("common.css");
-@import url("shared.css");
+
 
 #caption {
 	align-items: center;
@@ -12,13 +12,11 @@
 	flex: 1 0 auto;
 	height: 1px;
 }
-#report {
-	margin: 1vmax 0;
-	padding: 2vmax;
+
+#logs {
+	margin: .2rem 0 .28rem;
 }
-#report * {
-	font-size: 2rem;
-}
+
 #ctrl {
 	display: flex;
 	flex-direction: column-reverse;
@@ -27,7 +25,7 @@
 	position: relative;
 }
 #run {
-	font-size: 1.5rem;
+	font-size: 2.2vmax;
 	font-weight: bold;
 	margin: 1vmax 0 0;
 }
@@ -35,26 +33,18 @@
 	display: flex;
 	justify-content: flex-end;
 }
-#options > * {
-	margin: 0 .5vmax;
-}
-#options > :first-child {
-	margin-left: 0;
-}
-#options > :last-child {
-	margin-right: 0;
-}
 #length {
 	text-align: right;
 }
 #codes {
 	display: flex;
 	flex-wrap: wrap;
-	margin: 1vmax;
+	margin: .7rem .8rem .5rem;
 }
-#codes > * {
+#codes > :not(#add) {
 	
-	flex: 1 0 auto;
+	flex: 1 0 min-content;
+	margin-bottom: .6rem;
 	
 }
 #codes > :not(#add):not(last-child) {

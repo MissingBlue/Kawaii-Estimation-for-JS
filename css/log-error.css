@@ -1,0 +1,49 @@
+@import url("log-body.css");
+
+#content {
+	display: flex;
+}
+#content > * {
+	align-items: center;
+	display: flex;
+}
+#content ::slotted(*) {
+	align-items: center;
+	display: flex;
+}
+#position {
+	margin-right: 1vmax;
+}
+#position > * {
+	border-radius: .4vmax;
+	padding: .4vmax;
+}
+#position > :not(:last-child) {
+	margin-right: .5vmax;
+}
+#line {
+	background-color: rgba(200,0,0,.5);
+	color: rgba(255,216,216,1);
+}
+#col {
+	background-color: rgba(255,216,216,1);
+	color: rgba(200,80,80,1);
+}
+#position ::slotted(*) {
+	font-size: .6rem !important;
+}
+#message {
+}
+#error-type {
+	display: flex;
+}
+#error-type ::slotted(*) {
+	font-weight: bold !important;
+	text-decoration: underline;
+}
+#message ::slotted(*) {
+}
+#message ::slotted(*)::before {
+	content: ":";
+	margin-right: .8vmax;
+}

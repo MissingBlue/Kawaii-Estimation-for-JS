@@ -1,0 +1,60 @@
+@import url("common.css");
+
+#root {
+	
+	--bg-1: none;
+	--bg-0: transparent;
+	
+	align-items: center;
+	background: var(--bg-1), var(--bg-0);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row-reverse;
+	font-family: "Source Code Pro", monospace;
+	padding: .6vmax .4rem;
+	width: 100%;
+	
+}
+#root::after {
+	--size: 2vmax;
+	align-items: center;
+	background-color: rgba(0,0,0,.5);
+	border-radius: 100%;
+	color: rgba(240,240,240,1);
+	content: attr(data-i);
+	display: flex;
+	font-size: .6rem;
+	justify-content: center;
+	margin-right: 1vmax;
+	min-height: var(--size);
+	min-width: var(--size);
+}
+#root.important {
+	--bg-1-lg: rgba(0,255,0,.1);
+	--bg-1: linear-gradient(var(--bg-1-lg),var(--bg-1-lg));
+}
+#root.error {
+	--bg-1-lg: rgba(255,0,0,.25);
+	--bg-1: linear-gradient(var(--bg-1-lg),var(--bg-1-lg));
+}
+#root > * {
+}
+#ctrl {
+	margin-left: .5vmax;
+}
+#body {
+	align-items: center;
+	display: flex;
+	flex: 1 0 min-content;
+	justify-content: space-between;
+	position: relative;
+	overflow-wrap: anywhere;
+}
+#body::after {
+	content: attr(data-elapse);
+	display: flex;
+	flex: 1 0 auto;
+	font-size: .6rem;
+	justify-content: flex-end;
+	margin-left: .5vmax;
+}

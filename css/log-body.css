@@ -1,0 +1,14 @@
+@import url("common.css");
+
+#content ::slotted(*) {
+	
+	/*
+		About this !important:
+		https://stackoverflow.com/questions/61626493/slotted-css-selector-for-nested-children-in-shadowdom-slot
+	*/
+	font: normal normal normal .8rem/1 "Source Code Pro", monospace !important;
+	
+}
+#content ::slotted {
+	
+}

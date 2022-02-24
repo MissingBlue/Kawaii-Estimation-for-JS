@@ -5,13 +5,13 @@
 		<title>Kawaii Estimation for JS</title>
 		<link rel="stylesheet" href="css/default.css" />
 		<script src="js/utils.js"></script>
-		<script src="js/custom-elements.js"></script>
+		<script type="module" src="js/custom-elements.js"></script>
 	</head>
 	<body>
 		
 		<template id="dock-ctrl" data-css="css/dock-ctrl.css">
 			<div id="root">
-				<div id="options">
+				<div id="options" class="button-align-h">
 					<button is="emission-button" type="button" id="import">Import an App...</button>
 					<button is="emission-button" type="button" id="remove">Remove All Apps</button>
 				</div>
@@ -21,7 +21,7 @@
 		<template id="app-ctrl" data-css="css/app-ctrl.css">
 			<div id="root">
 				<button is="emission-button" type="button" id="add">Add a Node</button>
-				<div id="options">
+				<div id="options" class="button-align-h">
 					<button is="emission-button" type="button" id="copy" class="custom copy" promise>Copy as JSON</button>
 					<button is="emission-button" type="button" id="import">Import a Node...</button>
 					<button is="emission-button" type="button" id="remove-nodes">Remove All Nodes</button>
@@ -33,10 +33,11 @@
 		<template id="bench-node" data-css="css/bench-node.css">
 			<div id="root">
 				<div id="caption"><slot name="caption"></slot></div>
-				<div id="report"><div id="result">N/A</div></div>
+				<log-node id="logs"></log-node>
+				<!--<div id="report"><div id="result">N/A</div></div>-->
 				<div id="ctrl">
 					<button is="emission-button" type="button" id="run">Run</button>
-					<div id="options">
+					<div id="options" class="button-align-h">
 						<button is="emission-button" type="button" id="copy" class="custom copy" promise>Copy as JSON</button>
 						<button is="emission-button" type="button" id="import">Import a Script...</button>
 						<button is="emission-button" type="button" id="remove">Remove</button>
@@ -51,7 +52,7 @@
 		
 		<template id="bench-textarea" data-css="css/bench-textarea.css">
 			<div id="root">
-				<div id="report"><div id="result">N/A</div></div>
+				<!--<div id="logs"></div>-->
 				<div id="editor">
 					<div id="ctrl" class="ctrl-group">
 						<input type="text" id="length"/>
@@ -62,7 +63,10 @@
 							<button is="emission-button" type="button" id="remove">Remove</button>
 						</div>
 					</div>
-					<textarea id="value" class="nohint"></textarea>
+					<div id="main">
+						<log-node id="logs"></log-node>
+						<textarea id="value" class="nohint"></textarea>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -75,6 +79,55 @@
 				<div id="body">
 					<div id="buttons"></div>
 					<div id="value-outer"><textarea id="value"></textarea></div>
+				</div>
+			</div>
+		</template>
+		
+		<template id="log-node" data-css="css/log-node.css">
+			<div id="root">
+				<div id="ctrl">
+					<button is="emission-button" type="button" id="custom copy" promise>Copy</button>
+					<button is="emission-button" type="button" id="clear">Clear</button>
+				</div>
+				<div id="container"></div>
+			</div>
+		</template>
+		
+		<template id="log-line" data-css="css/log-line.css">
+			<div id="root">
+				<log-ctrl id="ctrl"></log-ctrl>
+				<div id="body"><slot name="body"></slot></div>
+			</div>
+		</template>
+		
+		<template id="log-ctrl" data-css="css/log-ctrl.css">
+			<div id="root">
+				<button is="emission-button" type="button" id="custom copy" promise>Copy</button>
+				<button is="emission-button" type="button" id="remove">Remove</button>
+			</div>
+		</template>
+		
+		<template id="log-info" data-css="css/log-info.css">
+			<div id="content">
+				<div id="message"><slot name="message"></slot></div>
+			</div>
+		</template>
+		
+		<template id="log-important" data-css="css/log-important.css">
+			<div id="content">
+				<div id="message"><slot name="message"></slot></div>
+			</div>
+		</template>
+		
+		<template id="log-error" data-css="css/log-error.css">
+			<div id="content">
+				<div id="position">
+					<div id="line"><slot name="line"></slot></div>
+					<div id="col"><slot name="col"></slot></div>
+				</div>
+				<div id="data">
+					<div id="error-type"><slot name="error-type"></slot></div>
+					<dic id="message"><slot name="message"></slot></div>
 				</div>
 			</div>
 		</template>

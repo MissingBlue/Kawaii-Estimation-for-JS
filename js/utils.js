@@ -55,14 +55,26 @@ uid4	= (prefix = '', suffix = '') => {
 	
 },
 
-defineCustomElements = (...customElementConstructors) => {
+defineCustomElements = async function(...customElementConstructors) {
 	
-	const isTagName = /^[a-z](?:\-|\.|[0-9]|_|[a-z]|\u00B7|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u203F-\u2040]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]|[\u10000-\uEFFFF])*-(?:\-|\.|[0-9]|_|[a-z]|\u00B7|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u203F-\u2040]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]|[\u10000-\uEFFFF])*$/;
-	let i, $;
+	const	isTagName = /^[a-z](?:\-|\.|[0-9]|_|[a-z]|\u00B7|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u203F-\u2040]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]|[\u10000-\uEFFFF])*-(?:\-|\.|[0-9]|_|[a-z]|\u00B7|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u203F-\u2040]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]|[\u10000-\uEFFFF])*$/,
+			l = customElementConstructors.length;
+	let i,$, names,module;
 	
 	i = -1;
-	while ($ = customElementConstructors[++i])
-		typeof $.tagName === 'string' && isTagName.test($.tagName) && customElements.define($.tagName, $);
+	while (++i < l) {
+		
+		if (HTMLElement?.isPrototypeOf($ = customElementConstructors[i]))
+			
+			$ && typeof $?.tagName === 'string' && isTagName.test($.tagName) && customElements.define($.tagName, $);
+			
+		else if ($ && typeof $ === 'object' && typeof $?.src === 'string' && $?.name) {
+			
+			(module = (await import($.src))?.[$.name]) && (await defineCustomElements(module));
+			
+		}
+		
+	}
 	
 },
 
@@ -197,6 +209,60 @@ getElapse = (to = 0, from = new Date()) => {
 	elapsed.days === null && !elapsed.hours &&
 		(elapsed.hours = null, elapsed.mins || (elapsed.mins = null, elapsed.secs ||
 			(elapsed.secs = null, elapsed.msecs || (elapsed.msecs = null))));
+	
+	return elapsed;
+	
+},
+getElapse2 = (to = 0, from = new Date()) => {
+	
+	if ((to = getStaticDate(to)).time > (from = getStaticDate(from)).time) {
+		
+		const elapsed = getElapse(from.source, to.source);
+		let k;
+		
+		for (k in elapsed) typeof elapsed[k] === 'number' && (elapsed[k] = -elapsed[k]);
+		elapsed.to = from, elapsed.from = to;
+		
+		return elapsed;
+		
+	}
+	
+	const monthly = [], elapsed = { years: 0, monthly, from, to };
+	let i, daysCount, mo,months, isLeap, y;
+	
+	i = months = -1,
+	daysCount = elapsed.totalDays = ((elapsed.time = from.time - to.time) / 1000 | 0) / 86400 | 0,
+	mo = from.month + 1, isLeap = !((y = from.year) % 4 || !(y % 100) && y % 400);
+	while ((daysCount -= monthly[i] ?? 0) >= 0) {
+		
+		monthly[++i] =
+			--mo === 1 ? isLeap ? 29 : 28 : mo === 3 || mo === 5 || mo === 8 || mo === 10 ? 30 : 31,
+		
+		mo ||= 12,
+		
+		++months === 12 && (++elapsed.years, months = 0, isLeap = !(--y % 4 || !(y % 100) && y % 400));
+		
+	}
+	
+	elapsed.days = (elapsed.months = (elapsed.years ||= null) === null && !months ? null : months) === null && !(monthly[i] += daysCount) ? null : monthly[i],
+	
+	elapsed.hours = from.hours < to.hours ? (24 - to.hours) + from.hours : from.hours - to.hours,
+	elapsed.mins =
+		from.mins < to.mins ? (--elapsed.hours, (60 - to.mins) + from.mins) : from.mins - to.mins,
+	elapsed.secs =
+		from.secs < to.secs ? (--elapsed.mins, (60 - to.secs) + from.secs) : from.secs - to.secs,
+	elapsed.msecs =
+		from.msecs < to.msecs ? (--elapsed.secs, (1000 - to.msecs) + from.msecs) : from.msecs - to.msecs,
+	
+	elapsed.days === null && !elapsed.hours &&
+		(elapsed.hours = null, elapsed.mins || (elapsed.mins = null, elapsed.secs ||
+			(elapsed.secs = null, elapsed.msecs || (elapsed.msecs = null)))),
+	
+	elapsed.totalMonths = (((elapsed.totalYears = elapsed.years) || 0) * 12 + elapsed.months) || null,
+	elapsed.totalHours = (((elapsed.totalDays ||= null) || 0) * 24 + elapsed.hours) || null,
+	elapsed.totalMins = ((elapsed.totalHours || 0) * 60 + elapsed.mins) || null,
+	elapsed.totalSecs = ((elapsed.totalMins || 0) * 60 + elapsed.secs) || null,
+	elapsed.totalMsecs = ((elapsed.totalSecs || 0) * 1000 + elapsed.msecs) || null;
 	
 	return elapsed;
 	

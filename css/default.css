@@ -1,7 +1,6 @@
-@import url("common.css");
+@import url("common.css");alog('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 
 html, body {
-	height: 100%;
 }
 
 body {
@@ -16,6 +15,7 @@ app-dock {
 app-node {
 	border: 3px solid rgba(216,216,216,1);
 	border-radius: 1vmax;
+	box-sizing: border-box;
 	display: block;
 	margin: 1vmax;
 	padding: 1vmax;

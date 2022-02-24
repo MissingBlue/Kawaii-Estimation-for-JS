@@ -8,20 +8,11 @@
 }
 
 #add {
-	font-size: 1rem;
+	font-size: 1.8vmax;
 	margin: 1vmax 0;
 }
 #options {
 	display: flex;
 	justify-content: flex-end;
 	right: 0;
-}
-#options > * {
-	margin: 0 .5vmax;
-}
-#options > :first-child {
-	margin-left: 0;
-}
-#options > :last-child {
-	margin-right: 0;
 }

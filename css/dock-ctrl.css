@@ -1,16 +1,11 @@
 @import url("common.css");
 
 #root {
-	margin: 1vmax 1vmax 0;
+	padding: 1vmax 1vmax 0;
 }
 #options {
 	
 	display: flex;
 	justify-content: flex-end;
-	
-}
-#options > * {
-	
-	margin: 0 .5vmax;
 	
 }

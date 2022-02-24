@@ -27,7 +27,7 @@ button {
 	border-radius: var(--button-press-amount);
 	color: var(--button-color);
 	font: normal normal normal .8rem/1 Arial, "メイリオ";
-	padding: .8vmax;
+	padding: .5rem;
 	
 }
 button:not(:disabled):hover {
@@ -47,9 +47,22 @@ button:disabled {
 	--button-background-color: rgba(200,200,200,1);
 	--button-color: rgba(255,255,255,1);
 }
+.button-align-h > button {
+	margin: 0 .2rem;
+}
+.button-align-h > button:first-child {
+	margin-left: 0;
+}
+.button-align-h > button:last-child {
+	margin-right: 0;
+}
+
 
 button[is="emission-button"] {
 	position: relative;
+}
+button[is="emission-button"] emission-node {
+	pointer-events: none;
 }
 button[is="emission-button"]:not(.custom) emission-node {
 	
@@ -59,7 +72,6 @@ button[is="emission-button"]:not(.custom) emission-node {
 	border-radius: 100%;
 	height: var(--size);
 	left: calc(var(--offset-x) - var(--size) / 2);
-	pointer-events: none;
 	position: absolute;
 	top: calc(var(--offset-y) - var(--size) / 2);
 	width: var(--size);
@@ -88,7 +100,6 @@ button[is="emission-button"].copy emission-node {
 	border-radius: .4vmax;
 	left: var(--offset-x);
 	padding: .4vmax;
-	pointer-events: none;
 	position: absolute;
 	top: var(--offset-y);
 	transform: var(--transform-0);
@@ -156,4 +167,9 @@ input[type="text"] {
 /* テキストエリア */
 textarea {
 	padding: .8vmax;
+}
+
+/* log-node */
+log-node {
+	display: block;
 }
